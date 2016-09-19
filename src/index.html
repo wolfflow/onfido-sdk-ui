@@ -29,11 +29,74 @@
           font-family: "Open Sans", sans-serif !important;
         }
       }
+
+      #onfido-mount{
+        position: fixed;
+        margin: auto;
+        left: 0;
+        right: 0;
+        top: 10%;
+      }
+
+      .background{
+        width: 100%;
+        position: absolute;
+      }
+
+      .background img{
+        width: 100%;
+      }
+
+      .background .button{
+        position: absolute;
+        top: 17.8%;
+        width: 20%;
+        height: 3%;
+        left: 8%;
+        opacity: 0;
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+      }
+
+      .overlay {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        visibility: hidden;
+        transition: opacity .5s ease-out;
+        opacity: 0;
+      }
+
+      .overlay.visible{
+        background-color: black;
+        opacity: 0.5;
+        visibility: visible;
+      }
+
+      .onfido-sdk-ui-Modal-inner::after {
+        content: "";
+        background: url('/cross.svg') no-repeat center;
+        width: 6%;
+        height: 5%;
+        margin: 7px;
+        right: 0;
+        position: absolute;
+        display: block;
+      }
+
+      .onfido-sdk-ui-Camera-uploadFallback button{
+        display: none;
+      }
     </style>
   </head>
   <body>
+    <div class="background">
+      <img class="image" src="${require(`./website_bank.jpg`)}"/>
+      <button class="button" id="onfido-button"></button>
+    </div>
+    <div class="overlay"></div>
     <div id="onfido-mount"></div>
-    <button id="onfido-button" disabled>Verify identity</button>
     <script type="text/javascript">
       var options = window.location.search.slice(1)
                     .split('&')
@@ -43,6 +106,7 @@
                       return a;
                     }, {});
       var useModal = options.useModal == "true"
+	  useModal = true
       if (!useModal){
         document.getElementById("onfido-button").style.visibility = "hidden";
       }
