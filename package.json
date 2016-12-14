@@ -33,7 +33,11 @@
     "src"
   ],
   "license": "MIT",
-  "author": "Lawrence Gosset <lawrence.gosset@onfido.com> (https://github.com/gosseti)",
+  "contributors": [
+    "Lawrence Gosset (https://github.com/gosseti)",
+    "Ricardo Freitas <ricardo.freitas@onfido.com> (https://github.com/derfreitas)"
+    "Henry Heath <henry.heath@onfido.com> (https://github.com/hjheath)"
+  ],
   "devDependencies": {
     "autoprefixer": "^6.3.3",
     "babel-cli": "^6.10.1",
