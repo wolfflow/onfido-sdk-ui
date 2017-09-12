@@ -1,6 +1,4 @@
 import { h, Component } from 'preact'
-import io from 'socket.io-client'
-
 import { isDesktop } from '../utils'
 import style from './style.css'
 
@@ -8,18 +6,12 @@ export default class MobileLink extends Component {
 
   constructor (props) {
     super(props)
-    const { methods, token, finalStep } = props
+    const { methods, token } = props
     this.state = {
-      shortUrl: null,
-      sessionId: (Math.random().toString(36)+'00000000000000000').slice(2, 8),
+      shortUrl: null
     }
     const longUrl = this.mobileUrl(methods, token)
     this.shortenUrl(longUrl, this.onShortUrl)
-
-    const socket = io(process.env.DESKTOP_SYNC_URL)
-    const room = this.state.sessionId
-    socket.emit('join', {room})
-    socket.on('complete', finalStep)
   }
 
   onShortUrl = (response) => {
@@ -46,7 +38,7 @@ export default class MobileLink extends Component {
 
   mobileUrl = (methods, token) => {
     const url = window.location.href.split('?')[0]
-    return `${url}?steps=${methods.join()},complete&token=${token}&sessionId=${this.state.sessionId}`
+    return `${url}?steps=${methods.join()},complete&token=${token}`
   }
 
   render = () => {

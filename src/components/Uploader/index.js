@@ -1,5 +1,6 @@
 import { h, Component } from 'preact'
 import Dropzone from 'react-dropzone'
+import Spinner from '../Spinner'
 import theme from '../Theme/style.css'
 import style from './style.css'
 import {functionalSwitch} from '../utils'
@@ -14,10 +15,16 @@ const UploadInstructions = ({error}) =>
     <UploadError error={errors[error.name]} />
   </div>
 
+const UploadProcessing = () =>
+  <div className={theme.center}>
+    <Spinner />
+    <div className={style.processing}>Processing your document</div>
+  </div>
+
 const UploadError = ({error}) =>
   error && <div className={`${style.text} ${style.error}`}>{`${error.message}. ${error.instruction}.`}</div>
 
-const UploaderPure = ({method, onImageSelected, error, token, finalStep}) =>
+const UploaderPure = ({method, onImageSelected, error, token}) =>
   <div>
     <Dropzone
       onDrop={([ file ])=> {
@@ -32,7 +39,7 @@ const UploaderPure = ({method, onImageSelected, error, token, finalStep}) =>
       {<UploadInstructions error={error}/>}
 
     </Dropzone>
-    { method === 'face' ? <MobileLink methods={['face']} token={token} finalStep={finalStep} /> : null }
+    { method === 'face' ? <MobileLink methods={['face']} token={token} /> : null }
   </div>
 
 
