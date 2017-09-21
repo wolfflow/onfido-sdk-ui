@@ -3,20 +3,16 @@ import createHistory from 'history/createBrowserHistory'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import io from 'socket.io-client'
-
-import { unboundActions, events } from '../../core'
-import {sendScreen} from '../../Tracker'
-import {wrapArray} from '../utils/array'
-import { createComponentList } from './StepComponentMap'
-import MobileLink from '../crossDevice/MobileLink'
+import MasterFlow from './MasterFlow'
+import CrossDeviceFlow from './CrossDeviceFlow'
 
 const history = createHistory()
 
+import { unboundActions } from '../../core'
 
 const Router = (props) =>
     props.options.mobileFlow ?
       <MobileRouter {...props}/> : <DesktopRouter {...props}/>
-
 
 class MobileRouter extends Component {
 
@@ -47,7 +43,7 @@ class MobileRouter extends Component {
 
   render = (props) =>
       this.state.token ?
-        <StepsRouter {...props} {...this.state}/> : <p>LOADING</p>
+        <MasterFlow {...props} {...this.state}/> : <p>LOADING</p>
 }
 
 class DesktopRouter extends Component {
@@ -58,9 +54,15 @@ class DesktopRouter extends Component {
       roomId: null,
       socket: io(process.env.DESKTOP_SYNC_URL),
       mobileConnected: false,
-      showMobileInstructions: false,
-      step: 0,
+      startCrossDevice: false,
+      flow: 'master',
+      step: this.props.step || 0,
     }
+
+    this.unlisten = history.listen(({state = this.initialState}) => {
+      this.setState(state)
+    })
+
     this.state.socket.on('joined', this.setRoomId)
     this.state.socket.on('get config', this.sendConfig)
     this.state.socket.emit('join', {})
@@ -82,98 +84,28 @@ class DesktopRouter extends Component {
     this.setState({step})
   }
 
-  showMobileInstructions = () => {
-    this.setState({showMobileInstructions: true})
-  }
-
-  render = (props) => {
-    // TODO this URL should point to where we host the mobile flow
-    const mobileUrl = `${document.location.origin}/${this.state.roomId}?mobileFlow=true`
-    return (
-      this.state.showMobileInstructions ? <MobileLink mobileUrl={mobileUrl} /> :
-        <StepsRouter {...props} onStepChange={this.onStepChange} showMobileInstructions={this.showMobileInstructions} synchMobileTransition={this.state.showMobileInstructions}/>
-    )
-  }
-}
-
-
-class StepsRouter extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      step: this.props.step || 0,
-      synchMobileTransition: this.props.synchMobileTransition,
-      componentsList: this.createComponentListFromProps(this.props),
-    }
-    this.unlisten = history.listen(({state = this.initialState}) => {
-      this.setState(state)
-    })
-  }
-
-  nextStep = () => {
-    const components = this.state.componentsList
-    const currentStep = this.state.step
-    const newStepIndex = currentStep + 1
-    if (components.length === newStepIndex){
-      events.emit('complete')
-    }
-    else {
-      this.setStepIndex(newStepIndex)
-    }
-  }
-
-  previousStep = () => {
-    const currentStep = this.state.step
-    this.setStepIndex(currentStep - 1)
-  }
-
-  setStepIndex = (newStepIndex) => {
-    const state = { step: newStepIndex }
-    const path = `${location.pathname}${location.search}${location.hash}`
-    this.props.onStepChange && this.props.onStepChange(newStepIndex)
+  pushHistory = (path, state) => {
     history.push(path, state)
   }
 
-  trackScreen = (screenNameHierarchy, properties = {}) => {
-    const { step } = this.currentComponent()
-    sendScreen(
-      [step.type, ...wrapArray(screenNameHierarchy)],
-      {...properties, ...step.options})
-  }
-
-  currentComponent = () => this.state.componentsList[this.state.step]
-
-  componentWillReceiveProps(nextProps) {
-    const componentsList = this.createComponentListFromProps(nextProps)
-    this.setState({componentsList})
-  }
-
-  componentWillMount () {
-    this.setStepIndex(this.state.step)
+  startCrossDevice = () => {
+    this.setState({startCrossDevice: true, step: 0, flow: 'crossDevice'})
   }
 
   componentWillUnmount () {
     this.unlisten()
   }
 
-  createComponentListFromProps = ({documentType, options:{steps}}) =>
-    createComponentList(steps, documentType)
-
-  render = ({options: {...globalUserOptions}, ...otherProps}) => {
-    const componentBlob = this.currentComponent()
-    const CurrentComponent = componentBlob.component
+  render = (props) => {
+    // TODO this URL should point to where we host the mobile flow
+    const mobileUrl = `${document.location.origin}/${this.state.roomId}?mobileFlow=true`
     return (
-      <div>
-        <CurrentComponent
-          {...{...componentBlob.step.options, ...globalUserOptions, ...otherProps}}
-          nextStep = {this.nextStep}
-          previousStep = {this.previousStep}
-          trackScreen = {this.trackScreen}/>
-      </div>
+      this.state.startCrossDevice ?
+        <CrossDeviceFlow step={this.state.step} mobileUrl={mobileUrl} pushHistory={this.pushHistory} onStepChange={this.onStepChange}/> :
+        <MasterFlow {...props} step={this.state.step} onStepChange={this.onStepChange} startCrossDevice={this.startCrossDevice} pushHistory={this.pushHistory} />
     )
   }
 }
-
 
 function mapStateToProps(state) {
   return {...state.globals}
