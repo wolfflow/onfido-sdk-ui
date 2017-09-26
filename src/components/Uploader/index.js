@@ -4,6 +4,9 @@ import theme from '../Theme/style.css'
 import style from './style.css'
 import {errors} from '../strings/errors'
 import { trackComponentAndMode } from '../../Tracker'
+import SwitchDevice from '../crossDevice/SwitchDevice'
+ import { isDesktop } from '../utils'
+ import { mobileCopy, desktopCopy } from '../strings/uploadCopy'
 
 const instructionsCopy = (method, side) => {
   const instructions = isDesktop ? desktopCopy.instructions : mobileCopy.instructions
@@ -21,11 +24,9 @@ const UploadInstructions = ({error, method, side}) =>
 const UploadError = ({error}) =>
   error && <div className={`${style.text} ${style.error}`}>{`${error.message}. ${error.instruction}.`}</div>
 
-const MobileLink = ({mobileUrl}) =>
-  mobileUrl && <p className={style.mobileUrl}>Mobile: {mobileUrl}</p>
-
-const UploaderPure = ({onImageSelected, error, mobileUrl}) =>
+const UploaderPure = ({onImageSelected, error, ...{changeFlow}}) =>
   <div>
+    { isDesktop ? <SwitchDevice {...{changeFlow}} /> : '' }
     <Dropzone
       onDrop={([ file ])=> {
         //removes a memory leak created by react-dropzone
@@ -38,7 +39,6 @@ const UploaderPure = ({onImageSelected, error, mobileUrl}) =>
     >
       {<UploadInstructions error={error}/>}
     </Dropzone>
-    <MobileLink mobileUrl={mobileUrl} />
   </div>
 
 export const Uploader = trackComponentAndMode(UploaderPure, 'file_upload', 'error')
