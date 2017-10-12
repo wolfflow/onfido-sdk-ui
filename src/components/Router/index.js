@@ -7,6 +7,7 @@ import createHistory from 'history/createBrowserHistory'
 import { componentsList } from './StepComponentMap'
 import StepsRouter from './StepsRouter'
 import Spinner from '../Spinner'
+import GenericError from '../crossDevice/GenericError'
 import { unboundActions, events } from '../../core'
 import { isDesktop } from '../utils'
 
@@ -28,8 +29,11 @@ class CrossDeviceMobileRouter extends Component {
       step: null,
       socket: io(process.env.DESKTOP_SYNC_URL),
       roomId: window.location.pathname.substring(3),
+      error: false
     }
     this.state.socket.on('config', this.setConfig(props.actions))
+    //TODO see if desktop can send a message when component is unmounted
+    // this.state.socket.on('unavailable', this.setState({error: true}))
     this.state.socket.emit('join', {roomId: this.state.roomId})
     this.requestConfig()
   }
@@ -40,6 +44,7 @@ class CrossDeviceMobileRouter extends Component {
 
   setConfig = (actions) => (data) => {
     const {token, steps, documentType, step} = data
+    if (!token) return this.setState({error: true})
     this.setState({token, steps, step})
     actions.setDocumentType(documentType)
   }
@@ -59,7 +64,8 @@ class CrossDeviceMobileRouter extends Component {
           step={this.state.step}
           onStepChange={this.onStepChange}
           sendClientSuccess={this.sendClientSuccess}
-        /> : <Spinner />
+        /> :
+        this.state.error ? <GenericError /> : <Spinner />
 }
 
 
