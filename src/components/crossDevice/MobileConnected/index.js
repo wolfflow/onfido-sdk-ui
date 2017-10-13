@@ -5,7 +5,13 @@ import style from './style.css'
 import { trackComponent } from '../../../Tracker'
 import {preventDefaultOnClick} from '../../utils'
 
-const MobileConnected = ({message, submessage, back}) => {
+const MobileConnected = ({message, submessage, socket, roomId, back}) => {
+  const cancelMobileConnection = () => {
+    //send a leave room event so that the mobile show the generic error screen
+    socket.emit('message', {event: 'event', payload: 'payload', roomId})
+    back()
+  }
+
   return (
     <div className={theme.step}>
       <h1 className={`${theme.title} ${theme.center}`}>{message}</h1>
@@ -20,7 +26,7 @@ const MobileConnected = ({message, submessage, back}) => {
         </ul>
       </div>
       <div href='#' className={style.cancel}
-         onClick={preventDefaultOnClick(back)}>Cancel</div>
+         onClick={preventDefaultOnClick(cancelMobileConnection)}>Cancel</div>
     </div>
   )
 }
