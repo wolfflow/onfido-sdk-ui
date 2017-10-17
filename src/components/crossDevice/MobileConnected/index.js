@@ -7,8 +7,7 @@ import {preventDefaultOnClick} from '../../utils'
 
 const MobileConnected = ({message, submessage, socket, roomId, back}) => {
   const cancelMobileConnection = () => {
-    //send a leave room event so that the mobile show the generic error screen
-    socket.emit('message', {event: 'event', payload: 'payload', roomId})
+    socket.emit('disconnecting', {roomId})
     back()
   }
 

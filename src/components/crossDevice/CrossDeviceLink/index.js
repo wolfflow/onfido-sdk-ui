@@ -51,15 +51,16 @@ class CrossDeviceLink extends Component {
   }
 
   onJoined = (data) => {
+    const {actions} = this.props
     this.setState({roomId: data.roomId})
+    actions.setRoomId(data.roomId)
   }
 
   onGetConfig = (data) => {
-    const { roomId, mobileConfig, socket, actions, nextStep } = this.props
+    const { roomId, mobileConfig, socket, nextStep } = this.props
     if (roomId && roomId !== data.roomId) {
-      socket.emit('leave', {roomId})
+      return socket.emit('disconnecting', {roomId})
     }
-    actions.setRoomId(data.roomId)
     this.sendMessage('config', mobileConfig, data.roomId)
     nextStep()
   }
