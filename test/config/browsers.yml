@@ -1,0 +1,10 @@
+- browser: IE
+  browser_version: 11
+  os: WINDOWS
+  os_version: 7
+  resolution: 1366x768
+- browser: Edge
+  browser_version: 16
+  os: WINDOWS
+  os_version: 10
+  resolution: 1366x768
