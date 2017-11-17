@@ -188,13 +188,11 @@ class CrossDeviceLinkUI extends Component {
     const buttonCopy = this.state.sending ? 'Sending' : 'Send link'
     return (
       <div>
-        <div className={style.header}>
-          { error.type ?
-            <SmsError error={error} trackScreen={this.props.trackScreen}/> :
-            <h1 className={`${theme.title} ${style.title}`}>Continue verification on your mobile</h1> }
-        </div>
+        { error.type ?
+          <SmsError error={error} trackScreen={this.props.trackScreen}/> :
+          <h1 className={`${theme.title} ${style.title}`}>Continue verification on your mobile</h1> }
         <div className={theme.thickWrapper}>
-          <div>We’ll text a secure link to your mobile</div>
+          <p>We’ll text a secure link to your mobile</p>
 
           <div className={style.smsSection}>
             <div className={style.fieldLabel}>
