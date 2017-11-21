@@ -42,7 +42,7 @@ const UploaderPure = ({method, side, onImageSelected, error, changeFlowTo, allow
         onImageSelected(file)
       }}
       multiple={false}
-      className={style.dropzone}
+      className={classNames(style.dropzone,{[style.noCrossDevice]: !allowCrossDeviceFlow})}
     >
       <UploadInstructions {...{error, method, side}}/>
     </Dropzone>

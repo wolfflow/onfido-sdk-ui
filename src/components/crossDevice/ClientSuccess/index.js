@@ -11,11 +11,11 @@ class ClientSuccess extends Component {
 
   render () {
     return (
-      <div className={style.wrapper}>
+      <div className={theme.thickWrapper}>
         <h1 className={theme.title}>Uploads successful</h1>
-        <p className={`${theme.center} ${style.submessage}`}>You can now return to your computer to continue</p>
+        <p>You can now return to your computer to continue</p>
         <span className={`${theme.icon}  ${style.icon}`} />
-        <div className={style.text}>Your computer may take a few seconds to update</div>
+        <p className={style.text}>Your computer may take a few seconds to update</p>
       </div>
     )
   }

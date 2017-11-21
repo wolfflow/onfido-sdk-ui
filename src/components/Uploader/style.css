@@ -44,19 +44,12 @@
   border: 1px dashed #585E5F;
   border-radius: 4px;
   background-color: #FFFFFF;
-  @media (--large) {
-    min-height: 16.5rem;
-  }
+  min-height: 256px;
   @media (--small-viewport) {
-    min-height: 13.5rem;
-    margin-top: 4.5rem;
+    min-height: 216px;
   }
 }
 
-.crossDeviceClient .dropzone {
-  min-height: 16.5rem;
-  margin-top: 4.5rem;
-  @media (--small-viewport) {
-    min-height: 13.5rem;
-  }
+.noCrossDevice {
+  margin-top: 72px;
 }

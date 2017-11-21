@@ -24,32 +24,30 @@ class CrossDeviceSubmit extends Component {
   render () {
     const documentCopy = this.hasMultipleDocuments() ? 'Documents uploaded' : 'Document uploaded'
     return (
-      <div>
+      <div className={theme.thickWrapper}>
         <h1 className={theme.title}>Great, that’s everything we need</h1>
-        <div className={theme.thickWrapper}>
-          <p className={`${theme.center} ${style.submessage}`}>We’re now ready to verify your identity</p>
+        <p className={`${theme.center} ${style.submessage}`}>We’re now ready to verify your identity</p>
 
-          <ul className={style.uploadList}>
+        <ul className={style.uploadList}>
+          <li>
+            <span className={`${theme.icon} ${style.icon}`}/>
+            <span className={style.listText}>{documentCopy}</span>
+          </li>
+          { this.hasFace() &&
             <li>
               <span className={`${theme.icon} ${style.icon}`}/>
-              <span className={style.listText}>{documentCopy}</span>
+              <span className={style.listText}>Selfie uploaded</span>
             </li>
-            { this.hasFace() &&
-              <li>
-                <span className={`${theme.icon} ${style.icon}`}/>
-                <span className={style.listText}>Selfie uploaded</span>
-              </li>
-            }
-          </ul>
+          }
+        </ul>
 
-          <div>
-            <button
-              className={`${theme.btn} ${theme["btn-primary"]} ${theme["btn-centered"]}`}
-              onClick={preventDefaultOnClick(this.props.nextStep)}
-            >
-              Submit verification
-            </button>
-          </div>
+        <div>
+          <button
+            className={`${theme.btn} ${theme["btn-primary"]} ${theme["btn-centered"]}`}
+            onClick={preventDefaultOnClick(this.props.nextStep)}
+          >
+            Submit verification
+          </button>
         </div>
       </div>
     )

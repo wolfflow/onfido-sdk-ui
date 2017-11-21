@@ -5,19 +5,17 @@ import {preventDefaultOnClick} from '../utils'
 import { trackComponent } from '../../Tracker'
 
 const Welcome = ({title, descriptions, nextButton, nextStep}) =>
-  <div>
+  <div className={theme.thickWrapper}>
     <h1 className={theme.title}>{title}</h1>
-    <div className={theme.thickWrapper}>
-      <div className={style.text}>
-        {descriptions.map(description => <p>{description}</p>)}
-      </div>
-      <a
-        href=''
-        className={`${theme.btn} ${theme["btn-centered"]} ${theme["btn-primary"]}`}
-        onClick={preventDefaultOnClick(nextStep)}>
-        {nextButton}
-      </a>
+    <div className={style.text}>
+      {descriptions.map(description => <p>{description}</p>)}
     </div>
+    <a
+      href=''
+      className={`${theme.btn} ${theme["btn-centered"]} ${theme["btn-primary"]}`}
+      onClick={preventDefaultOnClick(nextStep)}>
+      {nextButton}
+    </a>
   </div>
 
 Welcome.defaultProps =  {
